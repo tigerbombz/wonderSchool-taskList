@@ -73,39 +73,35 @@ class List extends Component {
   }
 
   render() {
-    console.log("this.state", this.state)
+
+    console.log("this.state", this.state.tasks)
+    const tasks = this.state.tasks;
+
+    const filtered = tasks
+      .reduce((obj, key) => {
+        obj[key.group] = obj[key.group] || [];
+        obj[key.group].push(key)
+        return obj;
+      }, {});
+
+
+    // console.log("object values", Object.values(filtered));
+    const groups = Object.values(filtered)
+      .map(group => {
+        group.map(item => {
+          return item
+        })
+        return group
+      })
+    console.log("do i have my groups", groups)
+
     return (
       <div>
         <h1>Things to Do</h1>
         <div>
           {
-            this.state.tasks.map(task => {
-              if(task.completedAt === null){
-                task.completedAt = 0;
-              }
-              return (
-                <div 
-                  key ={task.id}
-                  className="row" 
-                >
-                  <h4>
-                    <img src={group} />
-                    Task Group {task.id}
-                  </h4>
-                  <Link 
-                    to={{
-                      pathname: `/lists/${task.id}`,
-                      state: {
-                        task: task
-                      }
-                    }}
-                    component={ListItems}
-                  >
-                  Click Me
-                  </Link>
-                  <p>{task.completedAt} of {task.task.split(",").length} completed</p>
-                </div>
-              )
+            groups.map(group => {
+              console.log(Object.values(group))
             })
           }
         </div>
@@ -115,3 +111,33 @@ class List extends Component {
 }
 
 export default List;
+
+// {
+//   groups.map(group => {
+    
+//   })
+//     return (
+//       <div 
+//         key ={task.id}
+//         className="row" 
+//       >
+//         <h4>
+//           <img src={group} />
+//           Task Group {task.id}
+//         </h4>
+//         <Link 
+//           to={{
+//             pathname: `/lists/${task.id}`,
+//             state: {
+//               task: task
+//             }
+//           }}
+//           component={ListItems}
+//         >
+//         Click Me
+//         </Link>
+//         <p>{task.completedAt} of completed {group.length}</p>
+//       </div>
+//     )
+//   })
+// }
