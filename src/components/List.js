@@ -1,9 +1,13 @@
 import React, { Component } from 'react';
 import { BrowserRouter, Route, Link } from 'react-router-dom';
+import {Collapse} from 'react-collapse';
 
 import ListItems from './ListItems';
 
 import group from '../svgs/Group.svg';
+import incomplete from '../svgs/Incomplete.svg';
+import locked from '../svgs/Locked.svg';
+import completed from '../svgs/Completed.svg';
 
 class List extends Component {
   constructor(props){
@@ -67,9 +71,26 @@ class List extends Component {
           dependencyIds: [],
           completedAt: null,
         }
-      ]
+      ],
+      isOpened: false
     }
+  }
 
+  handleChange = (e) => {
+    console.log("e is", e);
+    //attempt 1
+    // this.setState({completedAt: !this.state.completedAt});
+
+    // attempt2
+    this.setState(prevState => ({
+      check: !prevState.completedAt
+    }))
+  }
+
+  handleExpand = (e) => {
+    this.setState(prevState =>({
+      isOpened: !this.state.isOpened
+    }))
   }
 
   render() {
@@ -84,26 +105,41 @@ class List extends Component {
         return obj;
       }, {});
 
-
-    // console.log("object values", Object.values(filtered));
-    const groups = Object.values(filtered)
-      .map(group => {
-        group.map(item => {
-          return item
-        })
-        return group
-      })
-    console.log("do i have my groups", groups)
+    let statusIcon = '';
+    // console.log("object values", Object.entries(filtered).length);
 
     return (
       <div>
         <h1>Things to Do</h1>
         <div>
-          {
-            groups.map(group => {
-              console.log(Object.values(group))
-            })
-          }
+          {Object.values(filtered).map((entry,idx) => {
+            return (
+              <div>
+                <h2 onClick={this.handleExpand}><img src={group} /> Task Group {idx+1}</h2>
+                {
+                  entry.map(x => {
+                    console.log("x is", x);
+                    if(x.dependencyIds.length === 0){
+                      statusIcon = <img src={incomplete} /> 
+                    }
+                    else if (x.dependencyIds.length > 0 ){
+                      statusIcon = <img src={locked} />  
+                    }
+                    else if(this.state.completedAt !== null){
+                      statusIcon = <img src={completed} /> 
+                    }
+                    return (
+                      <Collapse isOpened={this.state.isOpened} >
+                        <div>
+                          <p onClick={this.handleChange}>{statusIcon} {x.task}</p>
+                        </div>
+                      </Collapse>
+                    )
+                  })
+                }
+              </div>
+            )
+          })}
         </div>
       </div>
     )
@@ -112,32 +148,3 @@ class List extends Component {
 
 export default List;
 
-// {
-//   groups.map(group => {
-    
-//   })
-//     return (
-//       <div 
-//         key ={task.id}
-//         className="row" 
-//       >
-//         <h4>
-//           <img src={group} />
-//           Task Group {task.id}
-//         </h4>
-//         <Link 
-//           to={{
-//             pathname: `/lists/${task.id}`,
-//             state: {
-//               task: task
-//             }
-//           }}
-//           component={ListItems}
-//         >
-//         Click Me
-//         </Link>
-//         <p>{task.completedAt} of completed {group.length}</p>
-//       </div>
-//     )
-//   })
-// }
