@@ -72,7 +72,7 @@ class List extends Component {
           completedAt: null,
         }
       ],
-      isOpened: false
+      isOpened: true
     }
   }
 
@@ -83,7 +83,7 @@ class List extends Component {
 
     // attempt2
     this.setState(prevState => ({
-      check: !prevState.completedAt
+      completedAt: !prevState.completedAt
     }))
   }
 
